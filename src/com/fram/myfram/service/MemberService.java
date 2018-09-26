@@ -50,6 +50,8 @@ public class MemberService {
 	@Produces("application/json")
 	public String updateMember(Member member) {
 		int result = 0;
+		
+		
 		String resultmessage = null;
 		Gson gson = new Gson();
 		Response response = new Response();
