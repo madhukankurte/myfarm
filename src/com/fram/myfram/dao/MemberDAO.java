@@ -74,6 +74,55 @@ public static int saveMemer(Member member) throws Exception {
 		return result;
 
 	}
+
+public static int updateMember(Member member) {
+	int result = 0;
+
+	Connection connnection = null;
+	PreparedStatement preparedStatement = null;
+
+	String query = "Update  " + TABLE_NAME
+			+ " SET name='"+member.getName()+"',mobileNumber='"+member.getMobileNumber()+"',emailId='"+member.getEmailId()+"',address='"+member.getAddress()+"',date="+member.getDate()+",description='"+member.getDesc()+"'"
+			+ " Where userId = "+member.getUserId();
+
+	try {
+		connnection = Database.getConnection();
+		preparedStatement = connnection.prepareStatement(query);
+		
+		
+		
+		System.out.println(preparedStatement);
+		result = preparedStatement.executeUpdate();
+
+	} catch (SQLException e) {
+		e.printStackTrace();
+		int MYSQL_DUPLICATE_PK = 1062;
+		if (e.getErrorCode() == MYSQL_DUPLICATE_PK) {
+			// duplicate primary key
+			result = 1;
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+		result = 0;
+	} finally {
+		try {
+			if (preparedStatement != null) {
+				preparedStatement.close();
+			}
+		} catch (SQLException se) {
+		}
+		try {
+			if (connnection != null) {
+				connnection.close();
+			}
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}
+	}
+	return result;
+	
+}
+
 	
 public static List<Member> readAll() {
 
@@ -136,5 +185,61 @@ public static List<Member> readAll() {
 
 	return entries;
 }
+
+public static int deleteMemer(String userId) {
+	
+	int result = 0;
+
+	Connection connnection = null;
+	PreparedStatement preparedStatement = null;
+	
+	Statement statement=null;
+
+	String query = "delete from " + TABLE_NAME
+			+ " where userId = "+ userId;
+
+	try {
+		connnection = Database.getConnection();
+		
+		//preparedStatement = connnection.prepareStatement(query);
+		
+		statement=connnection.createStatement();
+		result=statement.executeUpdate(query);
+		
+		System.out.println(query);
+		
+		//result = preparedStatement.executeUpdate();
+
+	} catch (SQLException e) {
+		e.printStackTrace();
+		int MYSQL_DUPLICATE_PK = 1062;
+		if (e.getErrorCode() == MYSQL_DUPLICATE_PK) {
+			// duplicate primary key
+			result = 1;
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+		result = 0;
+	} finally {
+		try {
+			if (preparedStatement != null) {
+				preparedStatement.close();
+			}
+		} catch (SQLException se) {
+		}
+		try {
+			if (connnection != null) {
+				connnection.close();
+			}
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}
+	}
+	return result;
+
+	
+}
+
+
 
 }
